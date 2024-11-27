@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @MappedSuperclass
@@ -14,10 +15,10 @@ public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private Date createdAt;
+    private LocalDate createdAt;
 
     @PrePersist
     public void prePersist() {
-        createdAt = new Date();
+        createdAt = LocalDate.now();
     }
 }

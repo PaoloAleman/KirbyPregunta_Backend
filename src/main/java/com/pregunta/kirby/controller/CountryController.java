@@ -1,6 +1,5 @@
 package com.pregunta.kirby.controller;
 
-import ch.qos.logback.core.model.Model;
 import com.pregunta.kirby.model.Country;
 import com.pregunta.kirby.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
