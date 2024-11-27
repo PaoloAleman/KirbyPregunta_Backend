@@ -1,9 +1,11 @@
 package com.pregunta.kirby.controller;
 
+import com.pregunta.kirby.dtos.user.LoginUserDTO;
 import com.pregunta.kirby.dtos.user.CreateUserDTO;
 import com.pregunta.kirby.exception.*;
 import com.pregunta.kirby.model.Country;
 import com.pregunta.kirby.model.Gender;
+import com.pregunta.kirby.model.User;
 import com.pregunta.kirby.service.EmailService;
 import com.pregunta.kirby.service.UserService;
 import jakarta.mail.MessagingException;
@@ -34,11 +36,7 @@ public class UserController {
     @ResponseBody
     public String createUser(@RequestBody CreateUserDTO userDTO) {
         try {
-            System.out.println(session.getAttribute("randomNumber"));
-            System.out.println("Session ID: " + session.getId());
-            System.out.println("Session Attributes: " + session.getAttributeNames());
-
-            userService.validateFields(userDTO);
+            userService.validateFieldsRegister(userDTO);
             userService.validateThatPasswordsMatch(userDTO.getPassword(), userDTO.getRepeatPassword());
             userService.validateThatTheEmailIsNotUsed(userDTO.getEmail());
             userService.validateThatTheUsernameIsNotUsed(userDTO.getUsername());
@@ -57,8 +55,6 @@ public class UserController {
     @ResponseBody
     public String sendMail(@RequestParam("email") String email) {
         try {
-            System.out.println("Session ID: " + session.getId());
-            System.out.println("Session Attributes: " + session.getAttributeNames());
             Random random = new Random();
             session.setAttribute("randomNumber", random.nextInt(1000000));
             userService.validateThatTheEmailIsNotUsed(email);
@@ -68,6 +64,19 @@ public class UserController {
         } catch (ExistingUserException e) {
             return e.getMessage();
         }
-        return "";
+        return null;
+    }
+
+    @PostMapping("/login")
+    @ResponseBody
+    public String login(@RequestBody LoginUserDTO loginDTO) {
+        try {
+            userService.validateFieldsLogin(loginDTO);
+            User user = userService.login(loginDTO);
+            session.setAttribute("idUser", user.getId());
+        } catch (NonExistingUserException | EmptyFieldException e) {
+            return e.getMessage();
+        }
+        return null;
     }
 }

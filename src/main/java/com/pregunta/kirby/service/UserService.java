@@ -1,12 +1,14 @@
 package com.pregunta.kirby.service;
 
 import com.pregunta.kirby.dtos.user.CreateUserDTO;
+import com.pregunta.kirby.dtos.user.LoginUserDTO;
 import com.pregunta.kirby.exception.*;
 import com.pregunta.kirby.model.Country;
 import com.pregunta.kirby.model.Gender;
+import com.pregunta.kirby.model.User;
 
 public interface UserService {
-    void validateFields(CreateUserDTO userDTO) throws EmptyFieldException;
+    void validateFieldsRegister(CreateUserDTO userDTO) throws EmptyFieldException;
 
     void validateThatPasswordsMatch(String password, String repeatPassword) throws DifferentPasswordsException;
 
@@ -21,4 +23,8 @@ public interface UserService {
     void createUser(Gender gender, Country country, CreateUserDTO userDTO);
 
     void validateThatEmailCodeIsCorrect(String emailCode, Integer randomNumber) throws EmailCodeIncorrectException;
+
+    User login(LoginUserDTO loginDTO) throws NonExistingUserException;
+
+    void validateFieldsLogin(LoginUserDTO loginDTO) throws EmptyFieldException;
 }

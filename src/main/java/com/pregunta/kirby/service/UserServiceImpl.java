@@ -1,6 +1,7 @@
 package com.pregunta.kirby.service;
 
 import com.pregunta.kirby.dtos.user.CreateUserDTO;
+import com.pregunta.kirby.dtos.user.LoginUserDTO;
 import com.pregunta.kirby.exception.*;
 import com.pregunta.kirby.model.Country;
 import com.pregunta.kirby.model.Gender;
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void validateFields(CreateUserDTO userDTO) throws EmptyFieldException {
+    public void validateFieldsRegister(CreateUserDTO userDTO) throws EmptyFieldException {
         if(userDTO.getBirthdate().isEmpty() || userDTO.getEmail().isEmpty() || userDTO.getPassword().isEmpty()
                 || userDTO.getName().isEmpty() || userDTO.getRepeatPassword().isEmpty() || userDTO.getUsername().isEmpty()
                 || userDTO.getCountry() == null || userDTO.getGender() == null || userDTO.getEmailCode().isEmpty()){
@@ -87,6 +88,22 @@ public class UserServiceImpl implements UserService {
     public void validateThatEmailCodeIsCorrect(String emailCode, Integer randomNumber) throws EmailCodeIncorrectException {
         if (!emailCode.equals(randomNumber.toString())) {
             throw new EmailCodeIncorrectException("¡El código ingresado es incorrecto!");
+        }
+    }
+
+    @Override
+    public User login(LoginUserDTO loginDTO) throws NonExistingUserException {
+        User user = userRepository.findByUsername(loginDTO.getUsername());
+        if(user == null || !BCrypt.checkpw(loginDTO.getPassword(), user.getPassword())){
+            throw new NonExistingUserException("¡No encontramos un usuario con esos datos!");
+        }
+        return user;
+    }
+
+    @Override
+    public void validateFieldsLogin(LoginUserDTO loginDTO) throws EmptyFieldException {
+        if (loginDTO.getUsername().isEmpty() || loginDTO.getPassword().isEmpty()) {
+            throw new EmptyFieldException("¡No se permiten campos vacíos!");
         }
     }
 }
