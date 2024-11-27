@@ -1,6 +1,6 @@
 package com.pregunta.kirby.service;
 
-import com.pregunta.kirby.dtos.CreateUserDTO;
+import com.pregunta.kirby.dtos.user.CreateUserDTO;
 import com.pregunta.kirby.exception.*;
 import com.pregunta.kirby.model.Country;
 import com.pregunta.kirby.model.Gender;
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public void validateFields(CreateUserDTO userDTO) throws EmptyFieldException {
         if(userDTO.getBirthdate().isEmpty() || userDTO.getEmail().isEmpty() || userDTO.getPassword().isEmpty()
                 || userDTO.getName().isEmpty() || userDTO.getRepeatPassword().isEmpty() || userDTO.getUsername().isEmpty()
-                || userDTO.getCountry() == null || userDTO.getGender() == null){
+                || userDTO.getCountry() == null || userDTO.getGender() == null || userDTO.getEmailCode().isEmpty()){
             throw new EmptyFieldException("¡No se permiten campos vacíos!");
         }
     }
@@ -78,7 +78,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createUser(Gender gender, Country country, CreateUserDTO userDTO) {
-        userRepository.save(new User(userDTO.getName(), userDTO.getUsername(), userDTO.getBirthdate(),
-                BCrypt.hashpw(userDTO.getPassword(), BCrypt.gensalt()), userDTO.getEmail(), country, gender));
+        User user = new User(userDTO.getName(), userDTO.getUsername(), userDTO.getBirthdate(),
+                BCrypt.hashpw(userDTO.getPassword(), BCrypt.gensalt()), userDTO.getEmail(), country, gender);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void validateThatEmailCodeIsCorrect(String emailCode, Integer randomNumber) throws EmailCodeIncorrectException {
+        if (!emailCode.equals(randomNumber.toString())) {
+            throw new EmailCodeIncorrectException("¡El código ingresado es incorrecto!");
+        }
     }
 }

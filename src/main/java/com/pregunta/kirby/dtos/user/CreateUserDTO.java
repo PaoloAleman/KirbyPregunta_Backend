@@ -1,4 +1,4 @@
-package com.pregunta.kirby.dtos;
+package com.pregunta.kirby.dtos.user;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,4 +22,6 @@ public class CreateUserDTO {
     private Integer country;
 
     private Integer gender;
+
+    private String emailCode;
 }

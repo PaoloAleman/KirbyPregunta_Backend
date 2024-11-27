@@ -1,6 +1,6 @@
 package com.pregunta.kirby.service;
 
-import com.pregunta.kirby.dtos.CreateUserDTO;
+import com.pregunta.kirby.dtos.user.CreateUserDTO;
 import com.pregunta.kirby.exception.*;
 import com.pregunta.kirby.model.Country;
 import com.pregunta.kirby.model.Gender;
@@ -19,4 +19,6 @@ public interface UserService {
     Country validateThatCountryExist(Integer idCountry) throws NonExistingCountryException;
 
     void createUser(Gender gender, Country country, CreateUserDTO userDTO);
+
+    void validateThatEmailCodeIsCorrect(String emailCode, Integer randomNumber) throws EmailCodeIncorrectException;
 }
