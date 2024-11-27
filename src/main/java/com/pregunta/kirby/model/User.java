@@ -18,7 +18,7 @@ public class User extends BaseEntity {
 
     private String password;
 
-    private String birthday;
+    private String birthdate;
 
     @Column(unique=true)
     private String email;
@@ -26,7 +26,7 @@ public class User extends BaseEntity {
     private String profilePhoto;
 
     @ManyToOne
-    private City country;
+    private Country country;
 
     @ManyToOne
     private Gender gender;
