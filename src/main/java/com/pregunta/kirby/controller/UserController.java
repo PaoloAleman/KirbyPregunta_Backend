@@ -2,6 +2,7 @@ package com.pregunta.kirby.controller;
 
 import com.pregunta.kirby.dtos.user.LoginUserDTO;
 import com.pregunta.kirby.dtos.user.CreateUserDTO;
+import com.pregunta.kirby.dtos.user.UserDTO;
 import com.pregunta.kirby.exception.*;
 import com.pregunta.kirby.model.Country;
 import com.pregunta.kirby.model.Gender;
@@ -18,7 +19,6 @@ import java.util.Random;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-@ResponseBody
 public class UserController {
 
     final private UserService userService;
@@ -73,10 +73,18 @@ public class UserController {
         try {
             userService.validateFieldsLogin(loginDTO);
             User user = userService.login(loginDTO);
-            session.setAttribute("idUser", user.getId());
+            session.setAttribute("user", user);
         } catch (NonExistingUserException | EmptyFieldException e) {
             return e.getMessage();
         }
         return null;
+    }
+
+    @GetMapping("/session")
+    @ResponseBody
+    public UserDTO session() {
+        User user = (User) session.getAttribute("user");
+        return new UserDTO(user.getName(),user.getBirthdate(),user.getEmail(),user.getGender(),
+                                    user.getCountry(),user.getProfilePhoto(),user.getUsername());
     }
 }
